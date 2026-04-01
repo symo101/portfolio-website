@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simon Nduati Ngigi — Data Engineer & ML Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* --- APPLE LIGHT THEME VARIABLES --- */
+:root {
+  --bg: #fbfbfd; 
+  --bg2: #ffffff;
+  --bg3: #f5f5f7;
+  --surface: rgba(255, 255, 255, 0.65); 
+  --surface2: rgba(255, 255, 255, 0.85);
+  --border: rgba(0, 0, 0, 0.06);
+  --border2: rgba(0, 0, 0, 0.12);
+  --text: #1d1d1f; 
+  --muted: #86868b;
+  --muted2: #515154;
+  --accent: #0066cc; 
+  --accent2: #004499;
+  --accent-glow: rgba(0, 102, 204, 0.1);
+  --green: #28cd41;
+  --green-dim: rgba(40, 205, 65, 0.12);
+  --serif: 'DM Serif Display', Georgia, serif;
+  --sans: 'DM Sans', sans-serif;
+  --glass-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--sans);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  cursor: none;
+}
+
+/* Custom cursor */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease;
+}
+.cursor-ring {
+  width: 32px; height: 32px;
+  border: 1px solid rgba(0, 102, 204, 0.4);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transition: transform 0.4s cubic-bezier(0.2,1,0.2,1), width 0.3s, height 0.3s, opacity 0.3s;
+}
+a:hover ~ .cursor-ring, button:hover ~ .cursor-ring { transform: scale(2); background: rgba(0, 102, 204, 0.05); }
+
+/* Ambient pastel orbs */
+.orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(140px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  animation: drift 20s ease-in-out infinite alternate;
+}
+.orb1 { width: 600px; height: 600px; background: rgba(0, 102, 204, 0.15); top: -100px; left: -100px; animation-delay: 0s; }
+.orb2 { width: 500px; height: 500px; background: rgba(40, 205, 65, 0.12); top: 30%; right: -150px; animation-delay: -7s; }
+.orb3 { width: 550px; height: 550px; background: rgba(175, 82, 222, 0.12); bottom: -50px; left: 10%; animation-delay: -14s; }
+@keyframes drift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px,30px) scale(1.05); } }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; width: 100%;
+  padding: 18px 6%;
+  display: flex; justify-content: space-between; align-items: center;
+  z-index: 100;
+  transition: background 0.4s, border-color 0.4s;
+}
+nav.scrolled {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(24px) saturate(1.5);
+  -webkit-backdrop-filter: blur(24px) saturate(1.5);
+  border-bottom: 1px solid var(--border);
+}
+.logo {
+  font-family: var(--serif);
+  font-size: 1.4rem;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.logo span { color: var(--accent); }
+.nav-links { display: flex; gap: 40px; align-items: center; }
+.nav-links a {
+  text-decoration: none; color: var(--muted2);
+  font-size: 0.95rem; font-weight: 500;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: ''; position: absolute; bottom: -4px; left: 0;
+  width: 0; height: 1.5px; background: var(--accent);
+  transition: width 0.3s cubic-bezier(0.2,1,0.2,1);
+}
+.nav-links a:hover { color: var(--text); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  padding: 10px 24px;
+  border: 1px solid var(--border2);
+  border-radius: 40px;
+  color: var(--text) !important;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s !important;
+  background: var(--surface2);
+}
+.nav-cta:hover { background: var(--text) !important; color: #fff !important; border-color: var(--text) !important; }
+.nav-cta::after { display: none !important; }
+
+/* Hamburger */
+.hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; z-index: 101; }
+.hamburger span { width: 24px; height: 1.5px; background: var(--text); transition: all 0.3s; display: block; }
+.mobile-nav {
+  display: none; position: fixed; inset: 0; background: rgba(251, 251, 253, 0.97);
+  backdrop-filter: blur(20px); z-index: 99; flex-direction: column;
+  justify-content: center; align-items: center; gap: 40px;
+}
+.mobile-nav.open { display: flex; }
+.mobile-nav a { font-size: 2.5rem; font-family: var(--serif); color: var(--text); text-decoration: none; }
+.mobile-nav a:hover { color: var(--accent); }
+.close-btn { position: absolute; top: 28px; right: 6%; font-size: 1.5rem; color: var(--muted); cursor: pointer; background: none; border: none; }
+
+/* HERO */
+header {
+  min-height: 100vh;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center; padding: 120px 8% 80px;
+  position: relative; z-index: 2;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 2rem;
+  padding: 8px 20px;
+  border: 1px solid rgba(0, 102, 204, 0.15);
+  border-radius: 40px;
+  background: rgba(0, 102, 204, 0.05);
+  opacity: 0; animation: fadeUp 0.8s 0.2s forwards;
+}
+.hero-eyebrow::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.4; transform: scale(0.8); } }
+
+h1.hero-title {
+  font-family: var(--serif);
+  font-size: clamp(3.5rem, 8vw, 7.5rem);
+  line-height: 0.95;
+  letter-spacing: -2px;
+  margin-bottom: 2rem;
+  color: var(--text);
+  opacity: 0; animation: fadeUp 0.9s 0.4s forwards;
+}
+h1.hero-title em { font-style: italic; color: var(--accent); }
+.hero-desc {
+  max-width: 600px;
+  color: var(--muted2); font-size: 1.2rem; font-weight: 400;
+  line-height: 1.6; margin-bottom: 2.5rem;
+  opacity: 0; animation: fadeUp 0.9s 0.55s forwards;
+}
+.hero-stats {
+  display: flex; gap: 50px; margin-bottom: 3rem; justify-content: center;
+  opacity: 0; animation: fadeUp 0.9s 0.65s forwards;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: var(--serif); font-size: 2.2rem; color: var(--text);
+  display: block; line-height: 1; margin-bottom: 4px;
+}
+.stat-num span { color: var(--accent); }
+.stat-label { font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+.stat-divider { width: 1px; background: var(--border2); }
+
+.btn-group {
+  display: flex; gap: 16px;
+  opacity: 0; animation: fadeUp 0.9s 0.75s forwards;
+}
+.btn {
+  padding: 16px 36px; border-radius: 50px;
+  text-decoration: none; font-weight: 600; font-size: 1rem;
+  transition: all 0.4s cubic-bezier(0.16,1,0.3,1);
+  cursor: none; display: inline-block;
+}
+.btn-primary {
+  background: var(--text); color: #fff;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
+.btn-ghost {
+  border: 1px solid var(--border2); color: var(--text);
+  background: var(--surface2);
+  backdrop-filter: blur(10px);
+}
+.btn-ghost:hover { border-color: var(--text); background: var(--bg2); transform: translateY(-2px); }
+
+.scroll-hint {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  opacity: 0; animation: fadeIn 1s 1.5s forwards;
+}
+.scroll-hint span { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+.scroll-line { width: 1px; height: 50px; background: linear-gradient(to bottom, var(--border2), transparent); animation: scrollLine 2s 2s infinite; }
+@keyframes scrollLine { 0% { transform: scaleY(0); transform-origin: top; } 50% { transform: scaleY(1); transform-origin: top; } 51% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+@keyframes fadeUp { from { opacity:0; transform: translateY(30px); } to { opacity:1; transform: translateY(0); } }
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+/* SECTION SHARED */
+section { position: relative; z-index: 2; }
+.section-eyebrow {
+  font-size: 0.8rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 1rem; display: block;
+}
+.section-title {
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  letter-spacing: -1.5px; line-height: 1.05;
+  margin-bottom: 1rem; color: var(--text);
+}
+.section-sub { color: var(--muted2); font-size: 1.15rem; font-weight: 400; max-width: 550px; }
+
+/* PROJECTS - Z LAYOUT */
+#projects { padding: 120px 6%; }
+.projects-header { text-align: center; margin-bottom: 100px; }
+.projects-header .section-sub { margin: 0 auto; }
+
+.project-grid { display: flex; flex-direction: column; gap: 120px; margin-bottom: 100px; }
+
+.project-card {
+  display: flex; align-items: center; gap: 60px;
+}
+.project-card.reverse { flex-direction: row-reverse; }
+
+.project-visual-wrap {
+  flex: 1.2;
+  position: relative; overflow: hidden;
+  height: 480px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 32px;
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(20px);
+  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1), box-shadow 0.6s;
+}
+.project-card:hover .project-visual-wrap {
+  transform: scale(1.02);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+}
+
+/* Light Mode Project Backgrounds */
+.p1-bg { background: linear-gradient(135deg, #e8f2fc 0%, #ffffff 100%); }
+.p2-bg { background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%); }
+.p3-bg { background: linear-gradient(135deg, #fdf6e9 0%, #ffffff 100%); }
+.p4-bg { background: linear-gradient(135deg, #f6eefe 0%, #ffffff 100%); }
+.p5-bg { background: linear-gradient(135deg, #fdeeee 0%, #ffffff 100%); }
+.p6-bg { background: linear-gradient(135deg, #eefdee 0%, #ffffff 100%); }
+
+/* CSS ANIMATED ROTATING ICONS (RESTORED) */
+.project-svg-icon {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  z-index: 10;
+}
+.icon-ring {
+  width: 140px; height: 140px; border-radius: 50%;
+  border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  animation: rotateSlow 20s linear infinite;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+}
+.icon-ring::before {
+  content: ''; position: absolute;
+  width: 190px; height: 190px; border-radius: 50%;
+  border: 1.5px dashed rgba(0, 0, 0, 0.08);
+  animation: rotateSlow 30s linear infinite reverse;
+}
+.icon-ring::after {
+  content: ''; position: absolute;
+  width: 240px; height: 240px; border-radius: 50%;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+}
+@keyframes rotateSlow { to { transform: rotate(360deg); } }
+.icon-inner {
+  width: 72px; height: 72px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  animation: rotateSlow 20s linear infinite reverse;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+.project-visual-wrap:hover .icon-ring { animation-duration: 5s; }
+
+/* CSS Animated Chart Bars (Restored) */
+.chart-bars {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: flex-end; gap: 12px;
+  height: 100%;
+  padding-bottom: 50px;
+  z-index: 1;
+}
+.chart-bar {
+  width: 16px; border-radius: 8px 8px 0 0;
+  background: var(--accent);
+  opacity: 0;
+  animation: barGrow 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards, barPulse 3s ease-in-out infinite;
+}
+@keyframes barGrow { 
+  0% { transform: scaleY(0); transform-origin: bottom; opacity: 0; } 
+  100% { transform: scaleY(1); transform-origin: bottom; opacity: 1; } 
+}
+@keyframes barPulse { 
+  0%,100% { opacity: 0.2; } 
+  50% { opacity: 0.5; } 
+}
+
+/* Custom bar colors */
+.p1-bg .chart-bar { background: #28cd41; }
+.p2-bg .chart-bar { background: #0066cc; }
+.p3-bg .chart-bar { background: #ff9500; }
+.p4-bg .chart-bar { background: #af52de; }
+
+.project-info {
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.proj-num { font-family: var(--serif); font-size: 6rem; color: rgba(0,0,0,0.04); line-height: 1; margin-bottom: -10px; font-style: italic; }
+.proj-category { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+.project-info h3 { font-family: var(--serif); font-size: 2.5rem; letter-spacing: -1px; margin-bottom: 16px; line-height: 1.1; }
+.project-info p { color: var(--muted2); font-size: 1.1rem; font-weight: 400; line-height: 1.6; margin-bottom: 24px; }
+
+.impact-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--green-dim); border: 1px solid rgba(40, 205, 65, 0.2);
+  color: #1e9d31; font-size: 0.85rem; font-weight: 600;
+  padding: 8px 16px; border-radius: 30px;
+  margin-bottom: 24px;
+}
+.impact-pill::before { content: '↑'; font-size: 1rem; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+.tag {
+  font-size: 0.85rem; padding: 6px 16px; border-radius: 30px;
+  border: 1px solid var(--border); color: var(--text);
+  background: var(--bg2); font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+  transition: all 0.3s;
+}
+.tag:hover { border-color: var(--accent); color: var(--accent); }
+
+.proj-links { display: flex; gap: 14px; }
+.proj-link {
+  padding: 12px 28px; border-radius: 40px; font-size: 0.95rem; font-weight: 600;
+  text-decoration: none; transition: all 0.3s; cursor: none;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.proj-link-primary { background: var(--text); color: #fff; box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+.proj-link-primary:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0,102,204,0.2); }
+.proj-link-ghost { border: 1px solid var(--border2); color: var(--text); background: var(--surface2); }
+.proj-link-ghost:hover { border-color: var(--text); background: var(--bg2); transform: translateY(-2px); }
+
+/* DEEP LEARNING — half width glass cards */
+.dl-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+.dl-card {
+  border: 1px solid var(--border); border-radius: 32px;
+  overflow: hidden; background: var(--surface);
+  backdrop-filter: blur(20px);
+  box-shadow: var(--glass-shadow);
+  transition: all 0.4s;
+}
+.dl-card:hover { border-color: var(--border2); transform: translateY(-5px); box-shadow: 0 30px 60px rgba(0,0,0,0.08); }
+.dl-card-visual { height: 220px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); }
+.dl-card-body { padding: 40px; }
+.dl-card-body h3 { font-family: var(--serif); font-size: 1.8rem; margin-bottom: 12px; letter-spacing: -0.5px; }
+.dl-card-body p { color: var(--muted2); font-size: 1.05rem; font-weight: 400; margin-bottom: 24px; line-height: 1.6; }
+
+/* SKILLS */
+#skills { padding: 100px 6%; }
+.skills-inner { max-width: 1100px; margin: 0 auto; }
+.skills-header { margin-bottom: 60px; text-align: center; }
+.skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.skill-group {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--border);
+  box-shadow: var(--glass-shadow);
+  border-radius: 28px; padding: 36px;
+  transition: all 0.3s;
+}
+.skill-group:hover { border-color: var(--border2); transform: translateY(-3px); }
+.skill-group-title { font-weight: 700; font-size: 1.1rem; letter-spacing: 0.05em; margin-bottom: 16px; color: var(--accent); }
+.skill-items { display: flex; flex-direction: column; gap: 10px; }
+.skill-item { font-size: 0.95rem; color: var(--muted2); font-weight: 500; display: flex; align-items: center; gap: 10px; }
+.skill-item::before { content: ''; width: 4px; height: 4px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+
+/* ABOUT */
+#about { padding: 120px 6%; }
+.about-glass {
+  max-width: 1200px; margin: 0 auto;
+  background: var(--surface);
+  backdrop-filter: blur(30px) saturate(1.5);
+  -webkit-backdrop-filter: blur(30px) saturate(1.5);
+  border: 1px solid var(--border);
+  box-shadow: 0 40px 80px rgba(0,0,0,0.05);
+  border-radius: 40px;
+  overflow: hidden;
+}
+.about-inner { display: grid; grid-template-columns: 1.2fr 0.8fr; }
+.about-left { padding: 80px; border-right: 1px solid var(--border); background: rgba(255,255,255,0.4); }
+.about-right { padding: 80px; }
+.about-left h2 { font-family: var(--serif); font-size: 3.5rem; letter-spacing: -1.5px; margin-bottom: 24px; line-height: 1.1; }
+.about-left h2 em { font-style: italic; color: var(--accent); }
+.about-left p { color: var(--muted2); font-size: 1.15rem; font-weight: 400; line-height: 1.7; margin-bottom: 20px; }
+.about-stat { margin-bottom: 40px; padding-bottom: 40px; border-bottom: 1px solid var(--border); }
+.about-stat:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.about-stat-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.about-stat-value { font-size: 1.2rem; font-weight: 500; color: var(--text); line-height: 1.4; }
+.status-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--green); margin-right: 10px; animation: pulse 2s infinite; }
+
+/* CONTACT */
+#contact { padding: 120px 6%; }
+.contact-inner { max-width: 600px; margin: 0 auto; text-align: center; }
+.contact-inner .section-title { margin-bottom: 16px; }
+.contact-inner .section-sub { margin: 0 auto 48px; }
+.contact-form { display: flex; flex-direction: column; gap: 16px; text-align: left; }
+.contact-form input,
+.contact-form textarea {
+  width: 100%; padding: 18px 24px;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 16px; color: var(--text);
+  font-family: var(--sans); font-size: 1rem; font-weight: 400;
+  transition: all 0.3s; outline: none;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.02) inset;
+}
+.contact-form input::placeholder,
+.contact-form textarea::placeholder { color: var(--muted); }
+.contact-form input:focus,
+.contact-form textarea:focus {
+  border-color: var(--accent);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.15);
+}
+.contact-form textarea { resize: vertical; min-height: 150px; }
+.contact-form button {
+  width: 100%; padding: 18px;
+  background: var(--text); border: none;
+  border-radius: 40px; color: #fff;
+  font-family: var(--sans); font-size: 1.1rem; font-weight: 600;
+  cursor: none; transition: all 0.3s;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+.contact-form button:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 15px 30px rgba(0,102,204,0.25); }
+
+/* FOOTER */
+footer {
+  padding: 60px 6% 40px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  position: relative; z-index: 2;
+  background: var(--bg2);
+}
+.footer-logo { font-family: var(--serif); font-size: 1.4rem; font-weight: 600; }
+.footer-logo span { color: var(--accent); }
+.footer-links { display: flex; gap: 30px; }
+.footer-links a { text-decoration: none; color: var(--muted2); font-size: 0.95rem; font-weight: 500; transition: color 0.3s; }
+.footer-links a:hover { color: var(--accent); }
+.footer-copy { color: var(--muted); font-size: 0.9rem; }
+
+/* REVEAL ANIMATIONS */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.2,0.8,0.2,1), transform 1s cubic-bezier(0.2,0.8,0.2,1); }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 1s cubic-bezier(0.2,0.8,0.2,1), transform 1s cubic-bezier(0.2,0.8,0.2,1); }
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+.reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 1s cubic-bezier(0.2,0.8,0.2,1), transform 1s cubic-bezier(0.2,0.8,0.2,1); }
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+.d1 { transition-delay: 0.1s; } .d2 { transition-delay: 0.2s; } .d3 { transition-delay: 0.3s; }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .project-card { flex-direction: column !important; gap: 40px; }
+  .project-visual-wrap { width: 100%; height: 350px; }
+  .about-inner { grid-template-columns: 1fr; }
+  .about-left { border-right: none; border-bottom: 1px solid var(--border); padding: 50px; }
+  .about-right { padding: 50px; }
+  .dl-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  h1.hero-title { letter-spacing: -1.5px; }
+  .hero-stats { flex-wrap: wrap; gap: 30px; justify-content: center; }
+  .stat-num { font-size: 1.8rem; }
+  .stat-divider { display: none; }
+  .btn-group { flex-direction: column; align-items: center; width: 100%; }
+  .btn { width: 100%; text-align: center; }
+  .project-info { padding: 0; }
+  footer { flex-direction: column; gap: 24px; text-align: center; }
+  .footer-links { flex-wrap: wrap; justify-content: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+<div class="orb orb3"></div>
+
+<nav id="nav">
+  <a href="#" class="logo">Simon<span>.</span></a>
+  <div class="nav-links">
+    <a href="#projects">Work</a>
+    <a href="#skills">Skills</a>
+    <a href="#about">About</a>
+    <a href="#contact" class="nav-cta">Let's Talk</a>
+  </div>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-nav" id="mobileNav">
+  <button class="close-btn" id="closeNav">✕</button>
+  <a href="#projects" class="mobile-link">Work</a>
+  <a href="#skills" class="mobile-link">Skills</a>
+  <a href="#about" class="mobile-link">About</a>
+  <a href="#contact" class="mobile-link">Contact</a>
+</div>
+
+<header>
+  <div class="hero-eyebrow">Available for Attachments & Data Roles</div>
+  <h1 class="hero-title">
+    End-to-End Data.<br>
+    <em>Original Local Systems.</em>
+  </h1>
+  <p class="hero-desc">
+    BSc. Software Engineering student at Zetech University. I build ML pipelines and deploy live applications — using 100% self-sourced Kenyan datasets, not Kaggle.
+  </p>
+  <div class="hero-stats">
+    <div class="stat-item">
+      <span class="stat-num" data-target="1733">0</span>
+      <div class="stat-label">Listings scraped</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">6<span style="color:var(--accent)">+</span></span>
+      <div class="stat-label">Live projects</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">R²<span style="color:var(--accent)"> .683</span></span>
+      <div class="stat-label">Model accuracy</div>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num">5<span style="color:var(--accent)">s</span></span>
+      <div class="stat-label">Property valuation</div>
+    </div>
+  </div>
+  <div class="btn-group">
+    <a href="#projects" class="btn-primary btn">Explore Work ↓</a>
+    <a href="cv.pdf" download class="btn btn-ghost">Download Overview CV</a>
+  </div>
+  <div class="scroll-hint">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</header>
+
+<section id="projects">
+  <div class="projects-header reveal">
+    <span class="section-eyebrow">Featured Work</span>
+    <h2 class="section-title">Real data.<br>Real deployment.</h2>
+    <p class="section-sub">Six end-to-end projects built on original Kenyan datasets — scraped, modelled, and shipped live.</p>
+  </div>
+
+  <div class="project-grid">
+
+    <div class="project-card reveal">
+      <div class="project-visual-wrap p1-bg">
+        <div class="project-svg-icon">
+          <div class="icon-ring">
+            <div class="icon-inner" style="background:rgba(40, 205, 65, 0.15);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#28cd41" stroke-width="1.5">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-bar" style="height:40px;animation-delay:0.1s"></div>
+          <div class="chart-bar" style="height:120px;animation-delay:0.2s"></div>
+          <div class="chart-bar" style="height:65px;animation-delay:0.3s"></div>
+          <div class="chart-bar" style="height:150px;animation-delay:0.4s"></div>
+          <div class="chart-bar" style="height:95px;animation-delay:0.5s"></div>
+          <div class="chart-bar" style="height:110px;animation-delay:0.6s"></div>
+          <div class="chart-bar" style="height:55px;animation-delay:0.7s"></div>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="proj-num">01</div>
+        <div class="proj-category">Machine Learning · Real Estate</div>
+        <h3>Kenya Property Price Predictor</h3>
+        <div class="impact-pill">Valuation time: hours → 5 seconds</div>
+        <p>Architected an end-to-end ETL pipeline by scraping 1,733 live listings from BuyRentKenya to build a proprietary dataset. Trained a Random Forest model achieving R² of 0.683 on unstructured local market data.</p>
+        <div class="tags">
+          <span class="tag">ETL Pipeline</span>
+          <span class="tag">Scikit-Learn</span>
+          <span class="tag">BeautifulSoup</span>
+          <span class="tag">Streamlit</span>
+          <span class="tag">Random Forest</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://kenya-property-price-predictor.streamlit.app/" target="_blank" class="proj-link proj-link-primary">Launch App ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reverse reveal">
+      <div class="project-visual-wrap p2-bg">
+        <div class="project-svg-icon">
+          <div class="icon-ring">
+            <div class="icon-inner" style="background:rgba(0, 102, 204, 0.15);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="1.5">
+                <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-bar" style="height:50px;animation-delay:0.1s"></div>
+          <div class="chart-bar" style="height:80px;animation-delay:0.2s"></div>
+          <div class="chart-bar" style="height:130px;animation-delay:0.3s"></div>
+          <div class="chart-bar" style="height:90px;animation-delay:0.4s"></div>
+          <div class="chart-bar" style="height:160px;animation-delay:0.5s"></div>
+          <div class="chart-bar" style="height:120px;animation-delay:0.6s"></div>
+          <div class="chart-bar" style="height:180px;animation-delay:0.7s"></div>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="proj-num">02</div>
+        <div class="proj-category">Financial Analytics · CBK Data</div>
+        <h3>M-Pesa Financial Analysis Dashboard</h3>
+        <div class="impact-pill">96 months of CBK data structured</div>
+        <p>Extracted and structured 7 years of Central Bank of Kenya financial reports into a clean time-series dataset. Built an interactive dashboard visualizing transaction volumes and agent growth, eliminating manual report analysis.</p>
+        <div class="tags">
+          <span class="tag">Pandas</span>
+          <span class="tag">Plotly</span>
+          <span class="tag">Power BI</span>
+          <span class="tag">Time Series</span>
+          <span class="tag">Streamlit</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://mpesa-financial-analysis-dashboard.streamlit.app/" target="_blank" class="proj-link proj-link-primary">Launch App ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reveal">
+      <div class="project-visual-wrap p3-bg">
+        <div class="project-svg-icon">
+          <div class="icon-ring">
+            <div class="icon-inner" style="background:rgba(255, 149, 0, 0.15);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="1.5">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-bar" style="height:110px;animation-delay:0.1s"></div>
+          <div class="chart-bar" style="height:60px;animation-delay:0.2s"></div>
+          <div class="chart-bar" style="height:140px;animation-delay:0.3s"></div>
+          <div class="chart-bar" style="height:85px;animation-delay:0.4s"></div>
+          <div class="chart-bar" style="height:120px;animation-delay:0.5s"></div>
+          <div class="chart-bar" style="height:160px;animation-delay:0.6s"></div>
+          <div class="chart-bar" style="height:95px;animation-delay:0.7s"></div>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="proj-num">03</div>
+        <div class="proj-category">NLP · Real-time Scraping</div>
+        <h3>Kenya News Sentiment Tracker</h3>
+        <div class="impact-pill">200+ headlines processed daily</div>
+        <p>Engineered a real-time NLP pipeline scraping headlines from Standard Media across 6 categories. Automated TextBlob sentiment analysis, replacing manual monitoring with a continuously updating live dashboard.</p>
+        <div class="tags">
+          <span class="tag">NLP</span>
+          <span class="tag">TextBlob</span>
+          <span class="tag">BeautifulSoup</span>
+          <span class="tag">Streamlit</span>
+          <span class="tag">Sentiment Analysis</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://kenya-news-sentiment-tracker.streamlit.app/" target="_blank" class="proj-link proj-link-primary">Launch App ↗</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card reverse reveal">
+      <div class="project-visual-wrap p4-bg">
+        <div class="project-svg-icon">
+          <div class="icon-ring">
+            <div class="icon-inner" style="background:rgba(175, 82, 222, 0.15);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#af52de" stroke-width="1.5">
+                <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-bar" style="height:85px;animation-delay:0.1s"></div>
+          <div class="chart-bar" style="height:130px;animation-delay:0.2s"></div>
+          <div class="chart-bar" style="height:90px;animation-delay:0.3s"></div>
+          <div class="chart-bar" style="height:165px;animation-delay:0.4s"></div>
+          <div class="chart-bar" style="height:110px;animation-delay:0.5s"></div>
+          <div class="chart-bar" style="height:70px;animation-delay:0.6s"></div>
+          <div class="chart-bar" style="height:145px;animation-delay:0.7s"></div>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="proj-num">04</div>
+        <div class="proj-category">Financial Data · Live Scraping</div>
+        <h3>NSE Stock Tracker Dashboard</h3>
+        <div class="impact-pill">SCOM, KCB, EQTY, EABL, COOP tracked</div>
+        <p>Built a real-time data pipeline scraping live stock prices from NSE-listed companies. Developed an interactive dashboard for monitoring price movements, volatility, and trading trends in Kenyan equities.</p>
+        <div class="tags">
+          <span class="tag">Web Scraping</span>
+          <span class="tag">Plotly</span>
+          <span class="tag">EDA</span>
+          <span class="tag">Streamlit</span>
+          <span class="tag">Live Data</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://nse-stock-tracker.streamlit.app/" target="_blank" class="proj-link proj-link-primary">Launch App ↗</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="dl-grid reveal d1">
+    <div class="dl-card">
+      <div class="dl-card-visual p5-bg">
+        <div class="icon-ring" style="width:90px;height:90px;">
+          <div class="icon-inner" style="background:rgba(255, 59, 48, 0.15);width:50px;height:50px;border-radius:14px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff3b30" stroke-width="1.5">
+              <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="dl-card-body">
+        <div class="proj-category" style="margin-bottom:10px;">Deep Learning · LSTM</div>
+        <h3>Stock Prediction Dashboard</h3>
+        <p>LSTM-based deep learning model forecasting stock price trends from historical time-series data. Deployed as an interactive Dash web application.</p>
+        <div class="tags" style="margin-bottom:20px;">
+          <span class="tag">LSTM</span><span class="tag">Deep Learning</span><span class="tag">Dash</span><span class="tag">Time Series</span>
+        </div>
+        <a href="https://github.com/symo101/Stock-Price-Prediction-Dashboard" target="_blank" class="proj-link proj-link-ghost">GitHub Source ↗</a>
+      </div>
+    </div>
+
+    <div class="dl-card">
+      <div class="dl-card-visual p6-bg">
+        <div class="icon-ring" style="width:90px;height:90px;">
+          <div class="icon-inner" style="background:rgba(255, 45, 85, 0.15);width:50px;height:50px;border-radius:14px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ff2d55" stroke-width="1.5">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="dl-card-body">
+        <div class="proj-category" style="margin-bottom:10px;">Deep Learning · ANN · HealthTech</div>
+        <h3>Heart Disease Classification</h3>
+        <p>Artificial Neural Network classifying cardiovascular risk from patient health metrics. Demonstrates proficiency in structured medical data modelling.</p>
+        <div class="tags" style="margin-bottom:20px;">
+          <span class="tag">ANN</span><span class="tag">Neural Networks</span><span class="tag">Scikit-Learn</span><span class="tag">HealthTech</span>
+        </div>
+        <a href="https://github.com/symo101/Heart-Disease-Classification" target="_blank" class="proj-link proj-link-ghost">GitHub Source ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="skills-inner">
+    <div class="skills-header reveal">
+      <span class="section-eyebrow">Technical Stack</span>
+      <h2 class="section-title">Built with precision.</h2>
+    </div>
+    <div class="skills-grid">
+      <div class="skill-group reveal d1">
+        <div class="skill-group-title">Languages</div>
+        <div class="skill-items">
+          <span class="skill-item">Python</span>
+          <span class="skill-item">SQL</span>
+          <span class="skill-item">C</span>
+        </div>
+      </div>
+      <div class="skill-group reveal d1">
+        <div class="skill-group-title">Data & ML</div>
+        <div class="skill-items">
+          <span class="skill-item">Pandas / NumPy</span>
+          <span class="skill-item">Scikit-Learn</span>
+          <span class="skill-item">Random Forest · LSTM · ANN</span>
+          <span class="skill-item">EDA</span>
+        </div>
+      </div>
+      <div class="skill-group reveal d2">
+        <div class="skill-group-title">Data Engineering</div>
+        <div class="skill-items">
+          <span class="skill-item">ETL Pipelines</span>
+          <span class="skill-item">BeautifulSoup</span>
+          <span class="skill-item">Requests</span>
+          <span class="skill-item">Web Scraping</span>
+        </div>
+      </div>
+      <div class="skill-group reveal d2">
+        <div class="skill-group-title">Visualization</div>
+        <div class="skill-items">
+          <span class="skill-item">Power BI</span>
+          <span class="skill-item">Plotly</span>
+          <span class="skill-item">Dash</span>
+          <span class="skill-item">Streamlit</span>
+        </div>
+      </div>
+      <div class="skill-group reveal d3">
+        <div class="skill-group-title">Dev Tools</div>
+        <div class="skill-items">
+          <span class="skill-item">Git / GitHub</span>
+          <span class="skill-item">Linux</span>
+          <span class="skill-item">VS Code</span>
+          <span class="skill-item">Conda</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="about-glass reveal">
+    <div class="about-inner">
+      <div class="about-left">
+        <span class="section-eyebrow">About</span>
+        <h2>Engineering for <em>local impact.</em></h2>
+        <p>I move projects from raw data collection through ETL to model deployment — bypassing static Kaggle datasets for original Kenyan market data. Every project I've built solves a real local problem.</p>
+        <p>Currently pursuing a BSc. in Software Engineering at Zetech University, with a focus on systems that address financial and real estate challenges in Kenya.</p>
+        <p>Independently collected and processed 2,000+ real-world data points across real estate and mobile financial domains.</p>
+      </div>
+      <div class="about-right">
+        <div class="about-stat">
+          <div class="about-stat-label">Current Status</div>
+          <div class="about-stat-value"><span class="status-dot"></span>Open for attachments & data roles</div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-label">Education</div>
+          <div class="about-stat-value">BSc. Software Engineering<br><span style="color:var(--muted);font-size:0.95rem">Zetech University · Expected Dec 2026</span></div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-label">Experience</div>
+          <div class="about-stat-value">Data Science Virtual Intern<br><span style="color:var(--muted);font-size:0.95rem">CodSoft International · Jan 2026 – Present</span></div>
+        </div>
+        <div class="about-stat">
+          <div class="about-stat-label">Location</div>
+          <div class="about-stat-value">Nairobi, Kenya</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="contact-inner">
+    <div class="reveal">
+      <span class="section-eyebrow">Contact</span>
+      <h2 class="section-title">Let's build something.</h2>
+      <p class="section-sub">Have a role in mind or want to collaborate? Send me a message or reach out directly.</p>
+    </div>
+    <div class="reveal d1">
+      <form action="https://formspree.io/f/xbdpkooj" method="POST" class="contact-form">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="email" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">Simon<span>.</span></div>
+  <div class="footer-links">
+    <a href="https://www.linkedin.com/in/simon-ngigi" target="_blank">LinkedIn</a>
+    <a href="https://github.com/symo101" target="_blank">GitHub</a>
+    <a href="mailto:simonduati7@gmail.com">Email</a>
+  </div>
+  <p class="footer-copy">© 2026 Simon Nduati Ngigi</p>
+</footer>
+
+<script>
+/* Cursor */
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx-4+'px'; cursor.style.top = my-4+'px'; });
+function animateRing() { rx += (mx - rx - 16) * 0.12; ry += (my - ry - 16) * 0.12; ring.style.left = rx+'px'; ring.style.top = ry+'px'; requestAnimationFrame(animateRing); }
+animateRing();
+document.querySelectorAll('a,button').forEach(el => {
+  el.addEventListener('mouseenter', () => { cursor.style.transform='scale(2)'; ring.style.transform='scale(1.6)'; ring.style.opacity='0.8'; });
+  el.addEventListener('mouseleave', () => { cursor.style.transform='scale(1)'; ring.style.transform='scale(1)'; ring.style.opacity='1'; });
+});
+
+/* Nav scroll */
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 50); });
+
+/* Mobile nav */
+document.getElementById('hamburger').addEventListener('click', () => document.getElementById('mobileNav').classList.add('open'));
+document.getElementById('closeNav').addEventListener('click', () => document.getElementById('mobileNav').classList.remove('open'));
+document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', () => document.getElementById('mobileNav').classList.remove('open')));
+
+/* Scroll reveal */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el => observer.observe(el));
+
+/* Counter animation */
+function animateCounter(el) {
+  const target = parseInt(el.dataset.target);
+  if (!target) return;
+  let start = 0;
+  const duration = 2000;
+  const step = timestamp => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.textContent = Math.floor(eased * target).toLocaleString();
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const counterObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { animateCounter(e.target); counterObserver.unobserve(e.target); } });
+}, { threshold: 0.5 });
+document.querySelectorAll('[data-target]').forEach(el => counterObserver.observe(el));
+</script>
+</body>
+</html>

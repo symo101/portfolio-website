@@ -189,6 +189,7 @@ h1.hero-title em { font-style: italic; color: var(--accent); }
 
 .btn-group {
   display: flex; gap: 16px;
+  margin-bottom: 72px;
   opacity: 0; animation: fadeUp 0.9s 0.75s forwards;
 }
 .btn {
@@ -210,7 +211,7 @@ h1.hero-title em { font-style: italic; color: var(--accent); }
 .btn-ghost:hover { border-color: var(--text); background: var(--bg2); transform: translateY(-2px); }
 
 .scroll-hint {
-  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
   display: flex; flex-direction: column; align-items: center; gap: 8px;
   opacity: 0; animation: fadeIn 1s 1.5s forwards;
 }
@@ -391,7 +392,7 @@ section { position: relative; z-index: 2; }
 
 /* PRODUCTION SYSTEMS */
 #production { padding: 120px 6%; }
-.production-header { text-align: center; margin-bottom: 100px; }
+.production-header { text-align: center; margin-bottom: 72px; }
 .production-header .section-sub { margin: 0 auto; max-width: 680px; }
 .production-grid { display: flex; flex-direction: column; gap: 110px; }
 .production-card .project-visual-wrap { height: 420px; }
@@ -444,14 +445,16 @@ section { position: relative; z-index: 2; }
 .p7-bg { background: linear-gradient(135deg, #eefaf1 0%, #ffffff 100%); }
 .p8-bg { background: linear-gradient(135deg, #eef5ff 0%, #ffffff 100%); }
 .p9-bg { background: linear-gradient(135deg, #fff4e6 0%, #ffffff 100%); }
+.p10-bg { background: linear-gradient(135deg, #f6eefe 0%, #ffffff 100%); }
 .p7-bg .chart-bar { background: #28cd41; }
 .p8-bg .chart-bar { background: #0066cc; }
 .p9-bg .chart-bar { background: #ff9500; }
+.p10-bg .chart-bar { background: #af52de; }
 
 /* CAREER TIMELINE */
 #timeline { padding: 110px 6% 100px; }
 .timeline-inner { max-width: 1100px; margin: 0 auto; }
-.timeline-header { text-align: center; margin-bottom: 70px; }
+.timeline-header { text-align: center; margin-bottom: 56px; }
 .timeline-header .section-sub { margin: 0 auto; max-width: 680px; }
 .timeline-list {
   position: relative;
@@ -654,11 +657,11 @@ footer {
   .hero-stats { flex-wrap: wrap; gap: 30px; justify-content: center; }
   .stat-num { font-size: 1.8rem; }
   .stat-divider { display: none; }
-  .btn-group { flex-direction: column; align-items: center; width: 100%; }
+  .btn-group { flex-direction: column; align-items: center; width: 100%; margin-bottom: 86px; }
   .btn { width: 100%; text-align: center; }
   .project-info { padding: 0; }
   #production, #timeline { padding: 80px 6%; }
-  .production-header, .timeline-header { margin-bottom: 50px; }
+  .production-header, .timeline-header { margin-bottom: 42px; }
   .production-grid { gap: 80px; }
   .production-impact { border-radius: 20px; padding: 18px; }
   .production-features li { font-size: 0.95rem; }
@@ -967,7 +970,6 @@ footer {
   <div class="production-header reveal">
     <span class="section-eyebrow">Production Systems</span>
     <h2 class="section-title">Real tools I built for live operational work.</h2>
-    <p class="section-sub">Unlike the projects above, these are systems currently running in production at Fireside Group, used daily by real teams.</p>
   </div>
 
   <div class="production-grid">
@@ -1019,10 +1021,10 @@ footer {
           <div class="icon-ring">
             <div class="icon-inner" style="background:rgba(0, 102, 204, 0.15);">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0066cc" stroke-width="1.5">
-                <rect x="3" y="4" width="18" height="14" rx="2"/>
-                <path d="M8 22h8"/>
-                <path d="M12 18v4"/>
-                <path d="M7 13l3-3 2 2 5-5"/>
+                <path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"/>
+                <path d="M4 22a8 8 0 0 1 16 0"/>
+                <path d="M19 8v4"/>
+                <path d="M17 10h4"/>
               </svg>
             </div>
           </div>
@@ -1037,37 +1039,77 @@ footer {
         </div>
       </div>
       <div class="project-info">
-        <div class="proj-category">Reporting Automation &middot; Fireside Group</div>
-        <h3>Weekly Executive Reporting &amp; PowerPoint Automation</h3>
-        <p>Automated weekly executive PowerPoint generation for the Fixed Data Services and Rollout departments, each deck containing approximately 23 charts summarizing departmental performance and KPIs.</p>
+        <div class="proj-category">Production Systems &middot; Fireside Group</div>
+        <h3>Fireside PI-DB: Secure Staff Directory &amp; Audit Compliance Portal</h3>
+        <p>A full stack internal system for managing employee records, department assignments, and company vehicle allocations. Built with Next.js and Supabase, it replaced fragmented spreadsheets with a single source of truth. Every change to an employee's role, supervisor, or vehicle assignment is automatically logged with who made it, what changed, and when, creating a permanent audit trail with no extra manual work.</p>
         <div class="production-impact">
           <span class="production-impact-label">Impact</span>
-          <p>Eliminated manual chart creation and slide building. Ensured consistent, reproducible weekly reporting across two departments with zero manual formatting effort.</p>
+          <p>Gave HR and management a fully auditable record of every personnel change, supporting internal compliance requirements. Centralized previously scattered employee, supervision, and vehicle assignment records into one system, cutting administrative lookup time. Prevented invalid states, like assigning a company vehicle to an employee who's no longer active, through enforced data rules rather than manual checks.</p>
         </div>
         <div class="tags">
-          <span class="tag">Python</span>
-          <span class="tag">PowerPoint Automation</span>
-          <span class="tag">Google Sheets API</span>
-          <span class="tag">Data Visualization</span>
-          <span class="tag">Matplotlib</span>
-          <span class="tag">Pandas</span>
-          <span class="tag">python-pptx</span>
+          <span class="tag">Next.js</span>
+          <span class="tag">TypeScript</span>
+          <span class="tag">Supabase</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Argon2</span>
+          <span class="tag">RBAC</span>
+          <span class="tag">Jest</span>
         </div>
       </div>
     </div>
 
     <div class="project-card production-card reveal d3">
+      <div class="project-visual-wrap p10-bg">
+        <div class="project-svg-icon">
+          <div class="icon-ring">
+            <div class="icon-inner" style="background:rgba(175, 82, 222, 0.15);">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#af52de" stroke-width="1.5">
+                <path d="M3 6h18"/>
+                <path d="M3 12h18"/>
+                <path d="M3 18h18"/>
+                <path d="M7 4v16"/>
+                <path d="M17 4v16"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-bar" style="height:95px;animation-delay:0.1s"></div>
+          <div class="chart-bar" style="height:145px;animation-delay:0.2s"></div>
+          <div class="chart-bar" style="height:110px;animation-delay:0.3s"></div>
+          <div class="chart-bar" style="height:185px;animation-delay:0.4s"></div>
+          <div class="chart-bar" style="height:130px;animation-delay:0.5s"></div>
+          <div class="chart-bar" style="height:165px;animation-delay:0.6s"></div>
+        </div>
+      </div>
+      <div class="project-info">
+        <div class="proj-category">Production Systems &middot; Fireside Group</div>
+        <h3>Multi-Region Fleet Reporting &amp; Driver Behaviour Automation</h3>
+        <p>An automation pipeline built with n8n, Python, Playwright, FastAPI, Docker, and PostgreSQL/Supabase that runs fleet distance reporting and driver behaviour data ingestion across Nairobi, Mombasa, and combined HQ operations. It logs into the fleet tracking platform to generate and export motion reports, then monitors a shared mailbox for forwarded driver behaviour reports and parses Excel attachments across regions. Incoming records such as plates, alert types, timestamps, speed, region, and coordinates are cleaned, normalized, and upserted into the database on a schedule, with built in health checks and automated success and failure alerting.</p>
+        <div class="production-impact">
+          <span class="production-impact-label">Impact</span>
+          <p>Replaced a fully manual process of downloading and processing spreadsheets by hand across three regions. Standardized fleet telemetry and driver alert data into clean, database ready records, improving the reliability and traceability of daily operational reporting.</p>
+        </div>
+        <div class="tags">
+          <span class="tag">n8n</span>
+          <span class="tag">Python</span>
+          <span class="tag">Playwright</span>
+          <span class="tag">FastAPI</span>
+          <span class="tag">Docker</span>
+          <span class="tag">PostgreSQL</span>
+          <span class="tag">Supabase</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="project-card production-card reverse reveal d3">
       <div class="project-visual-wrap p9-bg">
         <div class="project-svg-icon">
           <div class="icon-ring">
             <div class="icon-inner" style="background:rgba(255, 149, 0, 0.15);">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#ff9500" stroke-width="1.5">
-                <path d="M3 3v18h18"/>
-                <path d="M7 15l4-4 3 3 5-7"/>
-                <circle cx="7" cy="15" r="1"/>
-                <circle cx="11" cy="11" r="1"/>
-                <circle cx="14" cy="14" r="1"/>
-                <circle cx="19" cy="7" r="1"/>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="M9 12l2 2 4-5"/>
               </svg>
             </div>
           </div>
@@ -1083,22 +1125,18 @@ footer {
       </div>
       <div class="project-info">
         <div class="proj-category">Production Systems &middot; Fireside Group</div>
-        <h3>Operations Scoreboard &mdash; Performance Analytics Dashboard</h3>
-        <p>Real-time operations performance dashboard tracking technicians, dispatchers, and Project Managers across daily, weekly, monthly, and quarterly timeframes.</p>
-        <ul class="production-features">
-          <li>Daily view used in morning standup meetings for live operational decisions</li>
-          <li>Weekly/monthly/quarterly views for trend analysis and performance management</li>
-          <li>Per-role breakdowns tracked separately for technicians, dispatchers, and PMs</li>
-          <li>Structured schema layer ensuring consistent, reliable performance figures</li>
-        </ul>
+        <h3>Vehicle Compliance Alert System: Insurance &amp; Inspection Tracking</h3>
+        <p>An automated compliance system monitoring insurance and inspection expiry dates across a 98-vehicle fleet. Running on a daily schedule, it cross-references vehicle records against expiry dates and sends WhatsApp alerts directly to the Head of Logistics and other department stakeholders responsible for fleet compliance, giving them advance warning before a vehicle's documents lapse.</p>
         <div class="production-impact">
           <span class="production-impact-label">Impact</span>
-          <p>Gave leadership real-time visibility into operational performance. Replaced manual performance tracking with a live, queryable system used at executive morning meetings.</p>
+          <p>Eliminated manual tracking of compliance deadlines across the entire fleet. Reduced the risk of regulatory non-compliance and unexpected vehicle downtime. Replaced reactive discovery of lapsed documents with proactive, automatic alerts to the people responsible for acting on them.</p>
         </div>
         <div class="tags">
-          <span class="tag">Supabase</span>
-          <span class="tag">Database Design</span>
-          <span class="tag">Web Development</span>
+          <span class="tag">Node.js</span>
+          <span class="tag">node-cron</span>
+          <span class="tag">Google Sheets API</span>
+          <span class="tag">Evolution API (WhatsApp)</span>
+          <span class="tag">Automation</span>
         </div>
       </div>
     </div>
@@ -1110,7 +1148,6 @@ footer {
     <div class="timeline-header reveal">
       <span class="section-eyebrow">Career Timeline</span>
       <h2 class="section-title">Mathematics, analytics, then production systems.</h2>
-      <p class="section-sub">My path moves from academic grounding into applied analytics and live production systems at Fireside Group.</p>
     </div>
 
     <div class="timeline-list">
@@ -1120,8 +1157,8 @@ footer {
           <div class="timeline-meta">
             <span class="timeline-org">Fireside Group</span>
           </div>
-          <h3 class="timeline-role">Data Analyst &mdash; BI &amp; Analytics Systems</h3>
-          <p class="timeline-body">Collaborate with product, finance, and operations teams to design and maintain analytics-ready datasets supporting business intelligence systems and decision-making. Own end-to-end reporting pipelines &mdash; from raw operational data through cleaning, validation, and database-backed storage, to automated dashboards used daily by stakeholders.</p>
+          <h3 class="timeline-role">Data Analyst, BI &amp; Analytics Systems</h3>
+          <p class="timeline-body">As the sole data analyst supporting the logistics department, I own the full path from raw operational data to the numbers leadership actually uses to make decisions. I design and maintain the analytics-ready datasets, reporting pipelines, and dashboards that finance, operations, and department heads rely on daily, catching data errors before they reach a report, reconciling figures across multiple systems, and making sure the business intelligence layer holds up under real scrutiny.</p>
           <div class="timeline-tags">
             <span class="tag">Power BI</span>
             <span class="tag">SQL</span>
@@ -1160,7 +1197,7 @@ footer {
           <div class="timeline-meta">
             <span class="timeline-org">Zetech University</span>
           </div>
-          <h3 class="timeline-role">Coursework &mdash; BSc. Software Engineering</h3>
+          <h3 class="timeline-role">Coursework, BSc. Software Engineering</h3>
           <p class="timeline-body">Coursework spanning data structures, databases, software design, and applied statistics, with independent projects applying machine learning and data engineering to real Kenyan datasets rather than academic sample data.</p>
           <div class="timeline-tags">
             <span class="tag">Software Engineering</span>
@@ -1242,7 +1279,7 @@ footer {
       <div class="about-right">
         <div class="about-stat">
           <div class="about-stat-label">Current Status</div>
-          <div class="about-stat-value"><span class="status-dot"></span>Open for attachments & data roles</div>
+          <div class="about-stat-value"><span class="status-dot"></span>Open to Data Analyst, Data Scientist &amp; ML roles, and always glad to connect with others in the field.</div>
         </div>
         <div class="about-stat">
           <div class="about-stat-label">Education</div>
